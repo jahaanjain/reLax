@@ -1,0 +1,8 @@
+{
+  "databaseURL": "Firebase Database URL",
+  "google": {
+    "clientID": "Google OAuth 2.0 ClientID",
+    "clientSecret": "Google OAuth 2.0 Client Secret",
+    "callbackURL": "Google OAuth 2.0 Callback URL"
+  }
+}

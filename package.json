@@ -1,0 +1,36 @@
+{
+  "name": "relax",
+  "version": "1.5.0",
+  "description": "Exercises and actitives designed to calm you down and increase productivity.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jahaanjain/reLax.git"
+  },
+  "keywords": [
+    "relax",
+    "calm",
+    "productivity",
+    "breathe"
+  ],
+  "author": "Jahaan Jain",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jahaanjain/reLax/issues"
+  },
+  "homepage": "https://github.com/jahaanjain/reLax#readme",
+  "dependencies": {
+    "cookie-parser": "^1.4.5",
+    "ejs": "^3.1.6",
+    "express": "^4.17.1",
+    "express-session": "^1.17.1",
+    "firebase-admin": "*",
+    "nodemon": "^2.0.7",
+    "passport": "^0.4.1",
+    "passport-google-oauth": "^2.0.0",
+    "select-random-file": "^1.2.0"
+  }
+}

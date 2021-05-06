@@ -1,0 +1,477 @@
+<!-- <% if (!user) { %>
+<form action="http://localhost:5001/relax-nyit/us-central1/app/auth/google">
+  <input type="submit" value="Login with Google" />
+</form>
+<% } %> -->
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+
+    <title>reLax - Take It Easy</title>
+    <meta name="description" content="Exercises and actitives designed to calm you down and increase productivity." />
+    <meta name="author" content="NYIT - Group 2" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+    <link href="assets/tabulator.css" rel="stylesheet" />
+    <script type="text/javascript" src="https://unpkg.com/tabulator-tables@4.9.3/dist/js/tabulator.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/amplitudejs@5.2.0/dist/amplitude.js"></script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@700&display=swap");
+    </style>
+    <style>
+      .bg {
+        background: url("/assets/images/<%- bg %>") no-repeat center center fixed;
+        -moz-background-size: cover;
+        -webkit-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
+      }
+      html * {
+        font-family: "Noto Sans JP", sans-serif !important;
+        color: white;
+        /* text-shadow: black 0.01em 0.01em 0.03em; */
+      }
+      .vertical-center {
+        min-height: 45%; /* Fallback for browsers do NOT support vh unit */
+        min-height: 45vh; /* These two lines are counted as one :-)       */
+
+        display: flex;
+        align-items: center;
+      }
+      .table-box-bg {
+        background: rgb(0, 0, 0, 0.25);
+        border-radius: 5px;
+        padding: 3%;
+      }
+      .center {
+        position: relative;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -25%);
+      }
+
+      .box {
+        width: 74px;
+        height: 74px;
+        box-sizing: border-box;
+        border-style: solid;
+        border-width: 37px 0px 37px 74px;
+        border-color: transparent transparent transparent white;
+        transition: all 100ms ease-in-out;
+      }
+
+      .pause {
+        border-style: double;
+        border-width: 0px 0px 0px 60px;
+      }
+
+      #music-polaris {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+      }
+
+      #fullscreen-andromeda {
+        position: fixed;
+        font-size: 100;
+        bottom: 0;
+        right: 0;
+        transform: translate(-25%, -25%);
+      }
+
+      #back-button {
+        position: fixed;
+        font-size: 100;
+        bottom: 0;
+        right: 0;
+        transform: translate(-25%, -25%);
+      }
+
+      .intro {
+        position: absolute;
+        background-color: #e2e2e2;
+        padding: 0;
+        margin: 0;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+      }
+
+      .video-container {
+        height: 500px;
+        width: 500px;
+        overflow: hidden;
+        position: relative;
+      }
+
+      video {
+        min-width: 100%;
+        min-height: 100%;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translateX(-50%) translateY(-50%);
+      }
+
+      .responsive-iframe {
+        position: relative;
+        width: 90%;
+        height: 175%;
+        border: none;
+      }
+    </style>
+  </head>
+  <body id="overlord" class="bg">
+    <div id="main" class="mb-5 pb-5">
+      <div class="container-xl vertical-center">
+        <div id="planets" class="justify-content-between">
+          <div id="greeting-earth"></div>
+          <div id="timeOrQuote-mars"></div>
+          <%if (JSON.parse(JSON.stringify(user)).data === null) { %>
+          <div id="signIn-pluto">
+            <a href="/auth/google"><button type="button" class="btn btn-outline-light" style="color: white">Sign In</button></a>
+          </div>
+          <% } else { %>
+          <div id="signOut-pluto">
+            <a href="/logout"><button type="button" class="btn btn-outline-light" style="color: white">Sign Out</button></a>
+          </div>
+          <% } %>
+        </div>
+      </div>
+      <div class="container-xl text-center">
+        <div class="row">
+          <div class="col-sm">
+            <div class="table-box-bg">
+              <div id="todo-rigel" class="tabulator-header tabulator-header-hidden"></div>
+              <div class="d-grid gap-2">
+                <button class="btn btn-secondary" type="button" style="margin-bottom: 0px; color: rgb(255, 255, 255); background: rgb(0, 0, 0, 0.15)" onclick="addTask()">Add A Task</button>
+              </div>
+            </div>
+            <div id="alert-sirius"></div>
+          </div>
+          <div class="col-sm">
+            <div class="table-box-bg">
+              <div class="row">
+                <div class="col-6">
+                  <div class="d-grid gap-2">
+                    <div id="exercise-canopus">
+                      <div id="overlay"><button type="button" class="btn btn-outline-light">Breathing Exercises</button></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="d-grid gap-2">
+                    <div id="exercise-canopus">
+                      <div id="overlay-news"><button type="button" class="btn btn-outline-light">News Articles</button></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="intro" class="intro" style="display: none">
+      <div id="video-pear">
+        <video autoplay muted loop>
+          <source src="assets/videos/<%- Math.floor(Math.random() * 4) %>.mp4" type="video/mp4" />
+        </video>
+      </div>
+    </div>
+    <div id="breathing" class="breathing bg" style="display: none">
+      <div class="vertical-center">
+        <div class="container pt-5 mt-5 mb-5 pb-5">
+          <div id="greeting-mars" class="mb-5">
+            <h1 id="greeting-breathing" style="font-size: 4.5em">Try these breathing exercises.</h1>
+          </div>
+          <div class="row">
+            <div class="col-6"><iframe class="responsive-iframe" src="https://www.youtube.com/embed/aXItOY0sLRY?playlist=aXItOY0sLRY&mute=1&loop=1&modestbranding=1&controls=0&rel=0"> </iframe></div>
+            <div class="col-6"><iframe class="responsive-iframe" src="https://www.youtube.com/embed/q2yXSnvOafU?playlist=q2yXSnvOafU&mute=1&loop=1&modestbranding=1&controls=0&rel=0"> </iframe></div>
+
+            <!-- Force next columns to break to new line -->
+            <div class="w-100"></div>
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+
+            <div class="col-6"><iframe class="responsive-iframe" src="https://www.youtube.com/embed/e3T9bkt0-7I?playlist=e3T9bkt0-7I&mute=1&loop=1&modestbranding=1&controls=0&rel=0"> </iframe></div>
+            <div class="col-6"><iframe class="responsive-iframe" src="https://www.youtube.com/embed/tYaaNePfPNk?playlist=tYaaNePfPNk&mute=1&loop=1&modestbranding=1&controls=0&rel=0"> </iframe></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="news" class="news bg" style="display: none">
+      <div class="vertical-center">
+        <div class="container pt-5 mt-5 mb-5 pb-5">
+          <div id="greeting-jupiter" class="mb-5">
+            <h1 id="greeting-news" style="font-size: 4.5em">Read these uplifting articles.</h1>
+          </div>
+          <div class="row">
+            <div class="col-6"><iframe class="responsive-iframe" src="/news1.html"> </iframe></div>
+            <div class="col-6"><iframe class="responsive-iframe" src="/news2.html"> </iframe></div>
+
+            <!-- Force next columns to break to new line -->
+            <div class="w-100"></div>
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+
+            <div class="col-6"><iframe class="responsive-iframe" src="/news3.html"> </iframe></div>
+            <div class="col-6"><iframe class="responsive-iframe" src="/news4.html"> </iframe></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="music-polaris">
+      <div class="container">
+        <div id="button-audio" class="box center"></div>
+        <!--   <div class="box pause"></div> -->
+      </div>
+    </div>
+    <div id="fullscreen-andromeda" class="full-screen">
+      <svg xmlns="http://www.w3.org/2000/svg" width="75" height="75" fill="currentColor" class="bi bi-fullscreen" viewBox="0 0 16 16">
+        <path
+          d="M1.5 1a.5.5 0 0 0-.5.5v4a.5.5 0 0 1-1 0v-4A1.5 1.5 0 0 1 1.5 0h4a.5.5 0 0 1 0 1h-4zM10 .5a.5.5 0 0 1 .5-.5h4A1.5 1.5 0 0 1 16 1.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 0-.5-.5h-4a.5.5 0 0 1-.5-.5zM.5 10a.5.5 0 0 1 .5.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 1 0 1h-4A1.5 1.5 0 0 1 0 14.5v-4a.5.5 0 0 1 .5-.5zm15 0a.5.5 0 0 1 .5.5v4a1.5 1.5 0 0 1-1.5 1.5h-4a.5.5 0 0 1 0-1h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 1 .5-.5z"
+        />
+      </svg>
+    </div>
+    <div id="back-button" class="full-screen" style="display: none">
+      <svg xmlns="http://www.w3.org/2000/svg" width="75" height="75" fill="currentColor" class="bi bi-arrow-bar-left" viewBox="0 0 16 16">
+        <path fill-rule="evenodd" d="M12.5 15a.5.5 0 0 1-.5-.5v-13a.5.5 0 0 1 1 0v13a.5.5 0 0 1-.5.5zM10 8a.5.5 0 0 1-.5.5H3.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L3.707 7.5H9.5a.5.5 0 0 1 .5.5z" />
+      </svg>
+    </div>
+  </body>
+  <script>
+    let user = JSON.parse(`<%- JSON.stringify(user) %>`);
+    $("#greeting-earth").html(`<h1 id="greeting" style="font-size: 4.5em;">Hey${user?.data?.firstName ? `, ${user?.data?.firstName}` : ""}!</h1>`);
+    $("#timeOrQuote-mars").html(`<h1 id="timeOrQuote" style="font-size: 2.5em;"><%- quote %></h1>`);
+    let swapPos = 0;
+    $(function () {
+      setInterval(function () {
+        if (!intro) {
+          $("#timeOrQuote").fadeOut(400, function () {
+            swapPos = swapPos === 0 ? 1 : 0;
+            $(this)
+              .text(swapPos === 0 ? "<%- quote %>" : "The time is " + new Date().toLocaleString("en-US", { hour: "numeric", minute: "numeric", hour12: true }) + ".")
+              .fadeIn(400);
+          });
+        }
+      }, 10 * 1000);
+    });
+    var tableData = user?.data ? user?.data?.todoList : [];
+    var tableDataFormatted = formatTable(tableData);
+    function formatTable(table) {
+      if (table.length > 0) {
+        let newTableData = [];
+        for (let i = 0; i < table.length; i++) {
+          newTableData.push({ id: i + 1, description: table[i] });
+        }
+        return newTableData;
+      } else {
+        return [{ id: 1, description: "Please login to save your todo list." }];
+      }
+    }
+
+    var table = new Tabulator("#todo-rigel", {
+      height: "311px",
+      data: tableDataFormatted,
+      layout: "fitColumns",
+      resizableColumns: false,
+      columns: [
+        { title: "Task #", field: "id", headerSort: false },
+        {
+          title: "Description",
+          field: "description",
+          widthGrow: 6,
+          headerSort: false,
+          editor: "input",
+          formatter: "textarea",
+          cellEdited: async function (cell) {
+            if (!user.data) {
+              return;
+            }
+            let res = await fetch("https://relax.jahaanjain.com/todo", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                userID: "<%- user.userID %>",
+                todoListID: cell.getRow().getData().id - 1,
+                operation: "change",
+                todoListDescription: cell.getValue(),
+              }),
+            })
+              .then((res) => res.json())
+              .then((data) => table.replaceData(formatTable(data.table)));
+          },
+        },
+        {
+          formatter: "buttonCross",
+          width: 40,
+          align: "center",
+          headerSort: false,
+          cellClick: async function (e, cell) {
+            if (!user.data) {
+              cell.getRow().delete();
+              return;
+            }
+            await fetch("https://relax.jahaanjain.com/todo", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                userID: `<%- user.userID %>`,
+                todoListID: cell.getRow().getData().id - 1,
+                operation: "delete",
+                todoListDescription: null,
+              }),
+            })
+              .then((res) => res.json())
+              .then((data) => table.replaceData(formatTable(data.table)));
+          },
+        },
+      ],
+    });
+    async function addTask() {
+      if (table.getData().length > 4) {
+        $("#alert-sirius").fadeIn(500, function () {
+          swapPos = swapPos === 0 ? 1 : 0;
+          $(this).html("<div class='alert alert-info' style='margin-top: 10px'>Relax. Let's work on getting these five tasks done first.</div>").delay(5000).fadeOut(400);
+        });
+        return;
+      }
+      if (!user.data) {
+        let motivateTodoList = [`That's the spirit. What do you want to do?`, "Good job. What needs to be done?", "Making progress. What's next?"];
+        tableDataFormatted.push({ id: tableDataFormatted.length + 1, description: motivateTodoList[Math.floor(Math.random() * motivateTodoList.length)] });
+        table.replaceData(tableDataFormatted);
+        return;
+      }
+      let res = await fetch("https://relax.jahaanjain.com/todo", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userID: "<%- user.userID %>",
+          todoListID: null,
+          operation: "create",
+          todoListDescription: null,
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => table.replaceData(formatTable(data.table)));
+    }
+    function shuffleArray(array) {
+      for (var i = array.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+      }
+    }
+    let songs = [];
+    //for loop just so that the songs array isnt so big
+    for (let i = 0; i < 11; i++) {
+      songs.push({
+        name: `Relax ${i + 1}`,
+        artist: "HBO Max",
+        album: "A World of Calm",
+        url: `/assets/music/${i + 1}.m4a`,
+        cover_art_url: "/assets/music/cover-art.png",
+      });
+    }
+    Amplitude.init({
+      songs: songs.sort(() => Math.random() - 0.5),
+    });
+    const box = document.querySelector(".box");
+    let paused = true;
+    box.addEventListener("click", (e) => {
+      e.target.classList.toggle("pause");
+      if (paused) {
+        Amplitude.play();
+        paused = false;
+      } else {
+        Amplitude.pause();
+        paused = true;
+      }
+    });
+
+    let intro = false;
+    $("#fullscreen-andromeda").click(function () {
+      if (!intro) {
+        intro = true;
+        openFullscreen();
+        $("#main").fadeOut(500);
+        $("#intro").fadeIn(500);
+        if (Amplitude.getPlayerState() === "stopped" || Amplitude.getPlayerState() === "paused") {
+          document.getElementById("button-audio").click();
+        }
+        Amplitude.play();
+        paused = false;
+      } else {
+        closeFullscreen();
+        intro = false;
+        $("#main").fadeIn(500);
+        $("#intro").fadeOut(500);
+      }
+    });
+
+    $("#overlay").click(function () {
+      $("#main").fadeOut(500);
+      $("#fullscreen-andromeda").fadeOut(500);
+      $("#breathing").fadeIn(500);
+      $("#back-button").fadeIn(500);
+    });
+
+    $("#overlay-news").click(function () {
+      $("#main").fadeOut(500);
+      $("#fullscreen-andromeda").fadeOut(500);
+      $("#news").fadeIn(500);
+      $("#back-button").fadeIn(500);
+    });
+
+    $("#back-button").click(function () {
+      $("#main").fadeIn(500);
+      $("#fullscreen-andromeda").fadeIn(500);
+      $("#breathing").fadeOut(500);
+      $("#news").fadeOut(500);
+      $("#back-button").fadeOut(500);
+    });
+
+    var elem = document.documentElement;
+
+    /* View in fullscreen */
+    function openFullscreen() {
+      if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+      } else if (elem.webkitRequestFullscreen) {
+        /* Safari */
+        elem.webkitRequestFullscreen();
+      } else if (elem.msRequestFullscreen) {
+        /* IE11 */
+        elem.msRequestFullscreen();
+      }
+    }
+
+    /* Close fullscreen */
+    function closeFullscreen() {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if (document.webkitExitFullscreen) {
+        /* Safari */
+        document.webkitExitFullscreen();
+      } else if (document.msExitFullscreen) {
+        /* IE11 */
+        document.msExitFullscreen();
+      }
+    }
+  </script>
+</html>
