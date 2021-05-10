@@ -137,17 +137,28 @@ app.get("/auth/google/callback", passport.authenticate("google", { failureRedire
 // the main page
 app.get("/", checkAuthentication, async (req, res) => {
   // get a random background image from the file path
-  async function getBG() {
-    return new Promise(function (resolve, reject) {
-      const dir = "./public/assets/images";
-      randomFile(dir, (err, file) => {
-        resolve(file);
-      });
-    });
+  function randomFromArray(arr, n) {
+    // arr: input array
+    // n: number of random elements to return
+    var result = new Array(n),
+      len = arr.length,
+      taken = new Array(len);
+    if (n > len) throw new RangeError("getRandom: more elements taken than available");
+    while (n--) {
+      var x = Math.floor(Math.random() * len);
+      result[n] = arr[x in taken ? taken[x] : x];
+      taken[x] = --len in taken ? taken[len] : len;
+    }
+    return result;
   }
-  let bg = await getBG();
+  let bg = randomFromArray(fs.readdirSync("./public/assets/images"), 1)[0];
+  let ytList = randomFromArray(["aXItOY0sLRY", "q2yXSnvOafU", "e3T9bkt0-7I", "tYaaNePfPNk", "NEMUDaLMWJ8", "bb5OOO_0HXs", "rZN6DcV5chA", "LoerOAhDVys", "MeVu60MuMVU", "VZTGBj7Zyvk"], 4);
+  let newsList = randomFromArray(fs.readdirSync("./public/assets/news"), 4);
+  let songsList = fs.readdirSync("./public/assets/music");
+  let video = randomFromArray(fs.readdirSync("./public/assets/videos"), 1)[0];
+
   // render the page through ejs
-  res.render("main", { user: req.user, quote: getQuote(), bg: bg });
+  res.render("main", { user: req.user, quote: getQuote(), bg: bg, ytList: ytList, newsList: newsList, songsList: songsList, video: video });
 });
 
 app.get("/logout", function (req, res) {

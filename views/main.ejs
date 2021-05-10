@@ -180,7 +180,7 @@
     <div id="intro" class="intro" style="display: none">
       <div id="video-pear">
         <video autoplay muted loop>
-          <source src="assets/videos/<%- Math.floor(Math.random() * 4) %>.mp4" type="video/mp4" />
+          <source src="assets/videos/<%- video %>" type="video/mp4" />
         </video>
       </div>
     </div>
@@ -191,8 +191,8 @@
             <h1 id="greeting-breathing" style="font-size: 4.5em">Try these breathing exercises.</h1>
           </div>
           <div class="row">
-            <div class="col-6"><iframe class="responsive-iframe" src="https://www.youtube.com/embed/aXItOY0sLRY?playlist=aXItOY0sLRY&mute=1&loop=1&modestbranding=1&controls=0&rel=0"> </iframe></div>
-            <div class="col-6"><iframe class="responsive-iframe" src="https://www.youtube.com/embed/q2yXSnvOafU?playlist=q2yXSnvOafU&mute=1&loop=1&modestbranding=1&controls=0&rel=0"> </iframe></div>
+            <div class="col-6"><iframe class="responsive-iframe" src="https://www.youtube.com/embed/<%- ytList[0] %>?playlist=<%- ytList[0] %>&mute=1&loop=1&modestbranding=1&controls=0&rel=0"> </iframe></div>
+            <div class="col-6"><iframe class="responsive-iframe" src="https://www.youtube.com/embed/<%- ytList[1] %>?playlist=<%- ytList[1] %>&mute=1&loop=1&modestbranding=1&controls=0&rel=0"> </iframe></div>
 
             <!-- Force next columns to break to new line -->
             <div class="w-100"></div>
@@ -203,8 +203,8 @@
             <br />
             <br />
 
-            <div class="col-6"><iframe class="responsive-iframe" src="https://www.youtube.com/embed/e3T9bkt0-7I?playlist=e3T9bkt0-7I&mute=1&loop=1&modestbranding=1&controls=0&rel=0"> </iframe></div>
-            <div class="col-6"><iframe class="responsive-iframe" src="https://www.youtube.com/embed/tYaaNePfPNk?playlist=tYaaNePfPNk&mute=1&loop=1&modestbranding=1&controls=0&rel=0"> </iframe></div>
+            <div class="col-6"><iframe class="responsive-iframe" src="https://www.youtube.com/embed/<%- ytList[2] %>?playlist=<%- ytList[2] %>&mute=1&loop=1&modestbranding=1&controls=0&rel=0"> </iframe></div>
+            <div class="col-6"><iframe class="responsive-iframe" src="https://www.youtube.com/embed/<%- ytList[3] %>?playlist=<%- ytList[3] %>&mute=1&loop=1&modestbranding=1&controls=0&rel=0"> </iframe></div>
           </div>
         </div>
       </div>
@@ -216,8 +216,8 @@
             <h1 id="greeting-news" style="font-size: 4.5em">Read these uplifting articles.</h1>
           </div>
           <div class="row">
-            <div class="col-6"><iframe class="responsive-iframe" src="/news1.html"> </iframe></div>
-            <div class="col-6"><iframe class="responsive-iframe" src="/news2.html"> </iframe></div>
+            <div class="col-6"><iframe class="responsive-iframe" src="/assets/news/<%- newsList[0] %>"> </iframe></div>
+            <div class="col-6"><iframe class="responsive-iframe" src="/assets/news/<%- newsList[1] %>"> </iframe></div>
 
             <!-- Force next columns to break to new line -->
             <div class="w-100"></div>
@@ -228,8 +228,8 @@
             <br />
             <br />
 
-            <div class="col-6"><iframe class="responsive-iframe" src="/news3.html"> </iframe></div>
-            <div class="col-6"><iframe class="responsive-iframe" src="/news4.html"> </iframe></div>
+            <div class="col-6"><iframe class="responsive-iframe" src="/assets/news/<%- newsList[2] %>"> </iframe></div>
+            <div class="col-6"><iframe class="responsive-iframe" src="/assets/news/<%- newsList[3] %>"> </iframe></div>
           </div>
         </div>
       </div>
@@ -377,15 +377,15 @@
         array[j] = temp;
       }
     }
-    let songs = [];
     //for loop just so that the songs array isnt so big
-    for (let i = 0; i < 11; i++) {
+    let songs = [];
+    for (let i = 0; i < parseInt("<%- songsList.length %>"); i++) {
       songs.push({
-        name: `Relax ${i + 1}`,
+        name: `Relax ${i}`,
         artist: "HBO Max",
         album: "A World of Calm",
-        url: `/assets/music/${i + 1}.m4a`,
-        cover_art_url: "/assets/music/cover-art.png",
+        url: `/assets/music/${i}.m4a`,
+        cover_art_url: "/assets/cover-art.png",
       });
     }
     Amplitude.init({
